@@ -2,8 +2,45 @@
 <html>
 <head>
     <title>Test Title</title>
+    <script src="https://tag.aticdn.net/piano-analytics.js"></script>
+    <script type="text/javascript">
+        pa.setConfigurations({
+            site:123456789,
+            collectDomain:'https://empty.collect.domain.com'
+        });
+    </script>
+
+    <script>
+        function SendEventButtonClicked() {
+            pa.sendEvent('page.display', // Event name
+                {
+                    'page': 'testify page', // Event properties
+                    'button': 'ButtonClicked'
+                }
+            );
+        }
+
+        function SendEventSuperButtonClicked() {
+            pa.sendEvent('click.action', // Event name
+                {
+                    'page': 'testify page', // Event properties
+                    'button': 'SuperButtonClicked'
+                }
+            );
+        }
+
+        function SendBadEvent() {
+            pa.sendEvent('', // Event name is empty
+                {
+                    'page': 'testify page', // Event properties
+                }
+            );
+        }
+    </script>
 </head>
 <body>
-Test Website!
+    <input type="button" onclick="SendEventButtonClicked()" value="Send event ButtonClicked">
+    <input type="button" onclick="SendEventSuperButtonClicked()" value="Send event SuperButtonClicked">
+    <input type="button" onclick="SendBadEvent()" value="Send BadEvent">
 </body>
 </html>
