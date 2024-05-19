@@ -11,7 +11,7 @@
     </script>
 
     <script>
-        function SendEventButtonClicked() {
+        function SendEventPageDisplay() {
             pa.sendEvent('page.display', // Event name
                 {
                     'page': 'testify page', // Event properties
@@ -20,8 +20,8 @@
             );
         }
 
-        function SendEventSuperButtonClicked() {
-            pa.sendEvent('click.action', // Event name
+        function SendEventPianoTest() {
+            pa.sendEvent('piano_test', // Event name
                 {
                     'page': 'testify page', // Event properties
                     'button': 'SuperButtonClicked'
@@ -29,8 +29,8 @@
             );
         }
 
-        function SendBadEvent() {
-            pa.sendEvent('', // Event name is empty
+        function SendEventPushwooshAction() {
+            pa.sendEvent('pushwoosh.action', // Event name is empty
                 {
                     'page': 'testify page', // Event properties
                 }
@@ -39,8 +39,8 @@
     </script>
 </head>
 <body>
-    <input type="button" onclick="SendEventButtonClicked()" value="Send event ButtonClicked">
-    <input type="button" onclick="SendEventSuperButtonClicked()" value="Send event SuperButtonClicked">
-    <input type="button" onclick="SendBadEvent()" value="Send BadEvent">
+    <input type="button" onclick="SendEventPageDisplay()" value="Send event PageDisplay">
+    <input type="button" onclick="SendEventPianoTest()" value="Send event Piano_TEST">
+    <input type="button" onclick="SendEventPushwooshAction()" value="Send event pushwoosh action">
 </body>
 </html>
