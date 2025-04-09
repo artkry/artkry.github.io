@@ -1,46 +1,45 @@
 <!doctype html>
 <html>
 <head>
-    <title>Test Title</title>
-    <script type="text/javascript" crossorigin="anonymous" src="https://tag.aticdn.net/piano-analytics.js"></script>
-    <script type="text/javascript">
-        pa.setConfigurations({
-            site: 642442,
-            collectDomain: 'https://zzhkllr.pa-cd.com'
-        });
-    </script>
+    <title>Test Web pushes</title>
 
+    <link rel="manifest" href="/manifest.json">
+    <script src="https://cdn.pushwoosh.com/webpush/v3/pushwoosh-web-notifications.js" async></script>
     <script>
-        function SendEventPageDisplay() {
-            pa.sendEvent('page.display', // Event name
-                {
-                    'page': 'testify page', // Event properties
-                    'button': 'ButtonClicked'
-                }
-            );
-        }
-
-        function SendEventPianoTest() {
-            pa.sendEvent('piano_test', // Event name
-                {
-                    'page': 'testify page', // Event properties
-                    'button': 'SuperButtonClicked'
-                }
-            );
-        }
-
-        function SendEventPushwooshAction() {
-            pa.sendEvent('pushwoosh.action', // Event name is empty
-                {
-                    'page': 'testify page', // Event properties
-                }
-            );
-        }
+        var Pushwoosh = Pushwoosh || [];
+        Pushwoosh.push(["init", {
+          logLevel: 'debug', // possible values: error, info, debug
+          applicationCode: '70F3D-EE04C',
+          safariWebsitePushID: 'web.com.example.domain',
+          defaultNotificationTitle: 'Pushwoosh',
+          defaultNotificationImage: 'https://cp.pushwoosh.com/img/logo-medium.png',
+          autoSubscribe: true,
+          userId: 'test-user-id-gc-1',
+          tags: {
+            'Name': 'Artyom Test'
+          }
+        }]);
     </script>
 </head>
 <body>
-    <input type="button" onclick="SendEventPageDisplay()" value="Send event PageDisplay">
-    <input type="button" onclick="SendEventPianoTest()" value="Send event Piano_TEST">
-    <input type="button" onclick="SendEventPushwooshAction()" value="Send event pushwoosh action">
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyB9puXYgJX4hVk4JYMJLDg5PDQ-_hFALU8",
+          authDomain: "artkry-test-firebase.firebaseapp.com",
+          projectId: "artkry-test-firebase",
+          storageBucket: "artkry-test-firebase.firebasestorage.app",
+          messagingSenderId: "318073139052",
+          appId: "1:318073139052:web:58106ea7fa2ce273520d49"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+      </script>
 </body>
 </html>
