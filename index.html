@@ -13,8 +13,11 @@
           safariWebsitePushID: 'web.com.example.domain',
           defaultNotificationTitle: 'Pushwoosh',
           defaultNotificationImage: 'https://cp.pushwoosh.com/img/logo-medium.png',
-          autoSubscribe: true,
-          userId: 'test-user-id-gc-1',
+          autoSubscribe: false,
+          userId: 'test-user-id-gc-2',
+          subscribeWidget: {
+            enable: true
+          },
           tags: {
             'Name': 'Artyom Test'
           }
@@ -22,6 +25,15 @@
     </script>
 </head>
 <body>
+
+    <div>Notifications available: <script>Pushwoosh.isAvailableNotifications()</script></div>
+
+    <script>
+        Pushwoosh.getPushToken().then(function(pushToken) {
+            console.log('pushToken:', pushToken);
+        });
+    </script>
+
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
