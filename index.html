@@ -1,56 +1,26 @@
 <!doctype html>
 <html>
 <head>
-    <title>Test Web pushes</title>
+    <script src="https://web-sdk-cdn.singular.net/singular-sdk/latest/singular-sdk.js"></script>
 
-    <script src="https://cdn.pushwoosh.com/webpush/v3/pushwoosh-web-notifications.js" async></script>
-    <script>
-        var Pushwoosh = Pushwoosh || [];
-        Pushwoosh.push(["init", {
-          logLevel: 'debug', // possible values: error, info, debug
-          applicationCode: '70F3D-EE04C',
-          safariWebsitePushID: 'web.com.example.domain',
-          defaultNotificationTitle: 'Pushwoosh',
-          defaultNotificationImage: 'https://cp.pushwoosh.com/img/logo-medium.png',
-          autoSubscribe: false,
-          userId: 'test-user-id-gc-1',
-          subscribeWidget: {
-            enable: true
-          },
-          tags: {
-            'Name': 'Artyom Test'
-          }
-        }]);
-    </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var sdkKey = 'pushwoosh_418706d6';
+      var sdkSecret = '6de556144bc0f3c4b7bfbf02c822a98c';
+      var productId = 'com.artkry.github.io';
+
+      var config = new SingularConfig(sdkKey, sdkSecret, productId);
+      window.singularSdk.init(config);
+    });
+  </script>
 </head>
 <body>
 
-    <div>Notifications available: <script>Pushwoosh.isAvailableNotifications()</script></div>
-
+    <button id="testEvent">Send test event</button>
     <script>
-        Pushwoosh.getPushToken().then(function(pushToken) {
-            console.log('pushToken:', pushToken);
-        });
+      document.getElementById('testEvent').addEventListener('click', function () {
+        window.singularSdk.event('TEST_CLICK', { source: 'gh_pages' });
+      });
     </script>
-
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-          apiKey: "AIzaSyB9puXYgJX4hVk4JYMJLDg5PDQ-_hFALU8",
-          authDomain: "artkry-test-firebase.firebaseapp.com",
-          projectId: "artkry-test-firebase",
-          storageBucket: "artkry-test-firebase.firebasestorage.app",
-          messagingSenderId: "318073139052",
-          appId: "1:318073139052:web:58106ea7fa2ce273520d49"
-        };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-      </script>
 </body>
 </html>

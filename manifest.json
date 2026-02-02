@@ -1,7 +1,0 @@
-{
-  "name": "test-web-pushes",
-  "short_name": "test-web-pushes",
-  "gcm_sender_id": "318073139052",
-  "display": "standalone",
-  "gcm_user_visible_only": true
-}
