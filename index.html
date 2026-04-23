@@ -1,26 +1,193 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-    <script src="https://web-sdk-cdn.singular.net/singular-sdk/latest/singular-sdk.js"></script>
+  <meta charset="utf-8">
+  <title>Pushwoosh Web Push SDK 3.0 — test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="/manifest.json">
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.5;
+    }
+    h1 { font-size: 1.4rem; }
+    section {
+      border: 1px solid rgba(127,127,127,.3);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    section h2 { margin-top: 0; font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; opacity: .8; }
+    button {
+      font: inherit;
+      padding: .4rem .8rem;
+      border-radius: 6px;
+      border: 1px solid rgba(127,127,127,.4);
+      background: transparent;
+      cursor: pointer;
+      margin: .15rem .15rem .15rem 0;
+    }
+    button:hover { background: rgba(127,127,127,.1); }
+    input {
+      font: inherit;
+      padding: .35rem .5rem;
+      border-radius: 6px;
+      border: 1px solid rgba(127,127,127,.4);
+      background: transparent;
+      color: inherit;
+      min-width: 14rem;
+    }
+    pre {
+      background: rgba(127,127,127,.12);
+      padding: .6rem .8rem;
+      border-radius: 6px;
+      overflow: auto;
+      font-size: .85rem;
+      margin: 0;
+    }
+    .row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin: .35rem 0; }
+    .muted { opacity: .7; font-size: .85rem; }
+    code { background: rgba(127,127,127,.15); padding: 0 .2rem; border-radius: 3px; }
+  </style>
 
+  <script src="https://cdn.pushwoosh.com/webpush/v3/pushwoosh-web-notifications.js" async></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var sdkKey = 'pushwoosh_418706d6';
-      var sdkSecret = '6de556144bc0f3c4b7bfbf02c822a98c';
-      var productId = 'com.artkry.github.io';
+    var Pushwoosh = Pushwoosh || [];
+    Pushwoosh.push(['init', {
+      logLevel: 'info',
+      applicationCode: '93E29-64F8A',
+      defaultNotificationTitle: 'Pushwoosh test',
+      autoSubscribe: false,
+      subscribeWidget: { enable: false }
+    }]);
 
-      var config = new SingularConfig(sdkKey, sdkSecret, productId);
-      window.singularSdk.init(config);
-    });
+    Pushwoosh.push(['onReady', function (api) {
+      window.__pwApi = api;
+      log('SDK ready');
+      refreshStatus();
+    }]);
+    Pushwoosh.push(['onSubscribe', function () {
+      log('event: onSubscribe');
+      refreshStatus();
+    }]);
+    Pushwoosh.push(['onUnsubscribe', function () {
+      log('event: onUnsubscribe');
+      refreshStatus();
+    }]);
+    Pushwoosh.push(['onPushDelivery', function (payload) {
+      log('event: onPushDelivery ' + JSON.stringify(payload));
+    }]);
+    Pushwoosh.push(['onNotificationClick', function (payload) {
+      log('event: onNotificationClick ' + JSON.stringify(payload));
+    }]);
   </script>
 </head>
 <body>
+  <h1>Pushwoosh Web Push SDK 3.0 — test page</h1>
+  <p class="muted">App code: <code>93E29-64F8A</code></p>
 
-    <button id="testEvent">Send test event</button>
-    <script>
-      document.getElementById('testEvent').addEventListener('click', function () {
-        window.singularSdk.event('TEST_CLICK', { source: 'gh_pages' });
+  <section>
+    <h2>Status</h2>
+    <pre id="status">loading…</pre>
+    <div class="row">
+      <button onclick="refreshStatus()">Refresh</button>
+      <button onclick="doSubscribe()">Subscribe</button>
+      <button onclick="doUnsubscribe()">Unsubscribe</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>User ID</h2>
+    <div class="row">
+      <input id="userId" placeholder="user-123">
+      <button onclick="setUserId()">registerUser</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tags</h2>
+    <div class="row">
+      <input id="tagKey" placeholder="Tag name (e.g. Name)">
+      <input id="tagValue" placeholder="Tag value (string or number)">
+      <button onclick="setTag()">setTags</button>
+    </div>
+    <p class="muted">Numeric values are sent as numbers; everything else as strings.</p>
+  </section>
+
+  <section>
+    <h2>Log</h2>
+    <pre id="log"></pre>
+    <div class="row">
+      <button onclick="document.getElementById('log').textContent=''">Clear</button>
+    </div>
+  </section>
+
+  <script>
+    function log(msg) {
+      var el = document.getElementById('log');
+      el.textContent += '[' + new Date().toISOString().slice(11, 19) + '] ' + msg + '\n';
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function refreshStatus() {
+      if (!window.Pushwoosh || !Pushwoosh.getParams) {
+        document.getElementById('status').textContent = 'SDK not ready yet';
+        return;
+      }
+      Promise.all([
+        Pushwoosh.isSubscribed().catch(function (e) { return 'error: ' + e.message; }),
+        Pushwoosh.getParams().catch(function (e) { return { error: e.message }; })
+      ]).then(function (res) {
+        var isSub = res[0];
+        var params = res[1] || {};
+        var info = {
+          isSubscribed: isSub,
+          hwid: params.hwid,
+          pushToken: params.pushToken,
+          userId: params.userId,
+          applicationCode: params.applicationCode
+        };
+        document.getElementById('status').textContent = JSON.stringify(info, null, 2);
       });
-    </script>
+    }
+
+    function doSubscribe() {
+      log('Pushwoosh.subscribe()');
+      Pushwoosh.subscribe().catch(function (e) { log('subscribe error: ' + e.message); });
+    }
+    function doUnsubscribe() {
+      log('Pushwoosh.unsubscribe()');
+      Pushwoosh.unsubscribe().catch(function (e) { log('unsubscribe error: ' + e.message); });
+    }
+
+    function setUserId() {
+      var uid = document.getElementById('userId').value.trim();
+      if (!uid) return log('userId is empty');
+      Pushwoosh.push(function (api) {
+        api.registerUser(uid);
+        log('registerUser(' + uid + ')');
+      });
+    }
+
+    function setTag() {
+      var key = document.getElementById('tagKey').value.trim();
+      var rawVal = document.getElementById('tagValue').value.trim();
+      if (!key) return log('tag key is empty');
+      var value = rawVal !== '' && !isNaN(Number(rawVal)) ? Number(rawVal) : rawVal;
+      var tags = {};
+      tags[key] = value;
+      Pushwoosh.push(function (api) {
+        api.setTags(tags).then(function () {
+          log('setTags ' + JSON.stringify(tags) + ' ok');
+        }).catch(function (e) {
+          log('setTags error: ' + e.message);
+        });
+      });
+    }
+  </script>
 </body>
 </html>

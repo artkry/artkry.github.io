@@ -1,0 +1,6 @@
+{
+  "name": "Pushwoosh Web Push Test",
+  "short_name": "PW Test",
+  "display": "standalone",
+  "gcm_user_visible_only": true
+}
